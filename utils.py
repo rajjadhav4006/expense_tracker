@@ -1,9 +1,23 @@
-import yfinance as yf
+from db import connect
 
-def get_stock_data(ticker):
-    try:
-        stock = yf.Ticker(ticker)
-        df = stock.history(period="1mo")
-        return df
-    except:
-        return None
+def add_expense(expense):
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "INSERT INTO expenses (title, amount, category, date) VALUES (?, ?, ?, ?)",
+        expense.to_tuple()
+    )
+
+    conn.commit()
+    conn.close()
+
+def view_expenses():
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM expenses")
+    rows = cursor.fetchall()
+
+    conn.close()
+    return rows
