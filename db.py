@@ -1,23 +1,21 @@
-from db import connect
+import sqlite3
 
-def add_expense(expense):
+def connect():
+    return sqlite3.connect("data.db", check_same_thread=False)
+
+def create_table():
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "INSERT INTO expenses (title, amount, category, date) VALUES (?, ?, ?, ?)",
-        expense.to_tuple()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS expenses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        amount REAL,
+        category TEXT,
+        date TEXT
     )
+    """)
 
     conn.commit()
     conn.close()
-
-def view_expenses():
-    conn = connect()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM expenses")
-    rows = cursor.fetchall()
-
-    conn.close()
-    return rows
