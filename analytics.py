@@ -1,21 +1,8 @@
-import sqlite3
+import pandas as pd
+from db import connect
 
-def connect():
-    return sqlite3.connect("data.db", check_same_thread=False)
-
-def create_table():
+def analyze_expenses_df():
     conn = connect()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS expenses (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        amount REAL,
-        category TEXT,
-        date TEXT
-    )
-    """)
-
-    conn.commit()
+    df = pd.read_sql_query("SELECT * FROM expenses", conn)
     conn.close()
+    return df
